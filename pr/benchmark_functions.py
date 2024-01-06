@@ -1,19 +1,6 @@
 import numpy as np
 
 
-# def calculate_sphere_function_value(
-#     parameters,
-# ):
-#     value = 0.00
-#     for parameter in parameters:
-#         try:
-#             value += round(value + (parameter**2), 2)
-#         except Exception as e:
-#             print(parameter)
-#             print(e)
-#     return value
-
-
 def calculate_step_2_function_value(
     parameters,
 ):
@@ -28,11 +15,14 @@ def calculate_step_2_function_value(
 
 
 def sphere_function(parameters):
-    return np.sum(np.array(parameters) ** 2)
+    return np.sum(np.array(list(parameters)) ** 2)
 
 
-def rosenbrocks_banana_function(x):
-    return np.sum(100 * (x[1:] - x[:-1] ** 2) ** 2 + (1 - x[:-1]) ** 2)
+def rosenbrocks_banana_function(parameters):
+    parameters = np.array(list(parameters))
+    return np.sum(
+        100 * (parameters[1:] - parameters[:-1] ** 2) ** 2 + (1 - parameters[:-1]) ** 2
+    )
 
 
 def rastrigin_function(x):
@@ -93,16 +83,3 @@ def levy_function(x):
     term3 = (w[-1] - 1) ** 2 * (1 + (np.sin(2 * np.pi * w[-1])) ** 2)
 
     return term1 + term2 + term3
-
-
-# Example usage:
-
-x_example = np.random.rand(10)  # Replace with your input vector
-
-print("Sphere Function:", sphere_function(x_example))
-
-print("Rosenbrock's Banana Function:", rosenbrocks_banana_function(x_example))
-
-print("Rastrigin Function:", rastrigin_function(x_example))
-
-# ... (similarly for other functions)

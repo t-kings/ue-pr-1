@@ -3,6 +3,7 @@ from enum import Enum
 from benchmark_functions import (
     sphere_function,
     calculate_step_2_function_value,
+    rosenbrocks_banana_function,
 )
 
 min_range = -100
@@ -23,6 +24,7 @@ class AlgorithmsEnum(Enum):
 class BenchmarkFunctionEnum(Enum):
     Sphere_Function = "sphere_function"
     Step_2_Function = "step_2_Function"
+    rosenbrocks_banana_function = "rosenbrocks_banana_function"
 
 
 def calculate_particle_p_best(iteration_particles, previous_iteration_particles):
@@ -71,6 +73,10 @@ def calculate_particle_value_with_algorithm(
             )
         if benchmark_function == BenchmarkFunctionEnum.Step_2_Function:
             particle_data["function_value"] = calculate_step_2_function_value(
+                particle_data["position"].values()
+            )
+        if benchmark_function == BenchmarkFunctionEnum.rosenbrocks_banana_function:
+            particle_data["function_value"] = rosenbrocks_banana_function(
                 particle_data["position"].values()
             )
 
@@ -250,6 +256,7 @@ def custom_particle_swarm_optimization_comparison():
     benchmarkFunctions = [
         BenchmarkFunctionEnum.Sphere_Function,
         BenchmarkFunctionEnum.Step_2_Function,
+        BenchmarkFunctionEnum.rosenbrocks_banana_function,
     ]
     benchmarkFunctionsIterations = {}
     for benchmarkFunction in benchmarkFunctions:
