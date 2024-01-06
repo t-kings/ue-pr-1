@@ -1,6 +1,9 @@
 import random
 from enum import Enum
-
+from benchmark_functions import (
+    sphere_function,
+    calculate_step_2_function_value,
+)
 
 min_range = -100
 max_range = 100
@@ -19,6 +22,7 @@ class AlgorithmsEnum(Enum):
 
 class BenchmarkFunctionEnum(Enum):
     Sphere_Function = "sphere_function"
+    Step_2_Function = "step_2_Function"
 
 
 def calculate_particle_p_best(iteration_particles, previous_iteration_particles):
@@ -57,25 +61,16 @@ def calculate_iteration_g_best(iteration_particles, previous_Iteration_g_best):
     return previous_Iteration_g_best
 
 
-def calculate_sphere_function_value(
-    parameters,
-):
-    value = 0.00
-    for parameter in parameters:
-        try:
-            value += round(value + (parameter**2), 2)
-        except Exception as e:
-            print(parameter)
-            print(e)
-    return value
-
-
 def calculate_particle_value_with_algorithm(
     particles, benchmark_function: BenchmarkFunctionEnum
 ):
     for particle_data in particles.values():
         if benchmark_function == BenchmarkFunctionEnum.Sphere_Function:
-            particle_data["function_value"] = calculate_sphere_function_value(
+            particle_data["function_value"] = sphere_function(
+                particle_data["position"].values()
+            )
+        if benchmark_function == BenchmarkFunctionEnum.Step_2_Function:
+            particle_data["function_value"] = calculate_step_2_function_value(
                 particle_data["position"].values()
             )
 
@@ -252,7 +247,10 @@ def custom_particle_swarm_optimization_comparison():
         6,
         2,
     )
-    benchmarkFunctions = [BenchmarkFunctionEnum.Sphere_Function]
+    benchmarkFunctions = [
+        BenchmarkFunctionEnum.Sphere_Function,
+        BenchmarkFunctionEnum.Step_2_Function,
+    ]
     benchmarkFunctionsIterations = {}
     for benchmarkFunction in benchmarkFunctions:
         benchmarkFunctionsIterations[benchmarkFunction] = {
@@ -264,8 +262,8 @@ def custom_particle_swarm_optimization_comparison():
             ),
         }
 
-    print("benchmarkFunctionsIterations")
-    print(benchmarkFunctionsIterations)
+    # print("benchmarkFunctionsIterations")
+    # print(benchmarkFunctionsIterations)
 
 
 custom_particle_swarm_optimization_comparison()
