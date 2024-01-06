@@ -102,22 +102,6 @@ def generate_initial_particles_with_positions_and_velocities(
     return particles
 
 
-def get_c2(iteration_count, number_of_particles):
-    return 2.5
-    c2 = round(iteration_count / number_of_particles)
-    if c2 > 4:
-        return 4
-    return c2
-
-
-def get_c1(iteration_count, number_of_particles):
-    return 0.5 / iteration_count
-    c1 = 3 - round(iteration_count / number_of_particles)
-    if c1 < 0:
-        return 0
-    return c1
-
-
 def generate_velocity(
     algorithm: AlgorithmsEnum,
     iteration_count,
@@ -208,7 +192,12 @@ def generate_particles_with_positions_and_velocities_and_algorithm(
     return particles
 
 
-def get_iteration_value(iteration_count, previous_Iteration, algorithm: AlgorithmsEnum):
+def get_iteration_value(
+    iteration_count,
+    previous_Iteration,
+    algorithm: AlgorithmsEnum,
+    benchmarkFunction: BenchmarkFunctionEnum,
+):
     iteration = {}
     if iteration_count != 1:
         iteration[
@@ -223,7 +212,7 @@ def get_iteration_value(iteration_count, previous_Iteration, algorithm: Algorith
         iteration = previous_Iteration
 
     particles = calculate_particle_value_with_algorithm(
-        iteration["particles"], BenchmarkFunctionEnum.Sphere_Function
+        iteration["particles"], benchmarkFunction
     )
 
     iteration["particles"] = calculate_particle_p_best(
@@ -237,7 +226,9 @@ def get_iteration_value(iteration_count, previous_Iteration, algorithm: Algorith
     return iteration
 
 
-def get_algorithm_values(particles, algorithm: AlgorithmsEnum):
+def get_algorithm_values(
+    particles, algorithm: AlgorithmsEnum, benchmarkFunction: BenchmarkFunctionEnum
+):
     is_stopping_criteria_reached = False
     iterations = {}
     iteration_count = 1
@@ -246,16 +237,12 @@ def get_algorithm_values(particles, algorithm: AlgorithmsEnum):
             iteration_count - 1, {"particles": particles}
         )
         iteration = get_iteration_value(
-            iteration_count,
-            previous_iteration,
-            algorithm,
+            iteration_count, previous_iteration, algorithm, benchmarkFunction
         )
         iterations[iteration_count] = iteration
         if iteration["g_best"]["value"] == 0 or iteration_count > 100:
             is_stopping_criteria_reached = True
-            print(algorithm, "iteration_count", iteration_count)
-            print("particles", particles)
-            print("iteration", iteration)
+            print(algorithm, benchmarkFunction, "iteration_count", iteration_count)
         iteration_count += 1
     return iterations
 
@@ -265,15 +252,20 @@ def custom_particle_swarm_optimization_comparison():
         6,
         2,
     )
-    pso_values = get_algorithm_values(particles, AlgorithmsEnum.PSO)
-    mpso_values = get_algorithm_values(particles, AlgorithmsEnum.MPSO)
+    benchmarkFunctions = [BenchmarkFunctionEnum.Sphere_Function]
+    benchmarkFunctionsIterations = {}
+    for benchmarkFunction in benchmarkFunctions:
+        benchmarkFunctionsIterations[benchmarkFunction] = {
+            "pso_values": get_algorithm_values(
+                particles, AlgorithmsEnum.PSO, benchmarkFunction
+            ),
+            "mpso_values": get_algorithm_values(
+                particles, AlgorithmsEnum.MPSO, benchmarkFunction
+            ),
+        }
 
-    # print("pso_values")
-    # print(pso_values)
-    # print("\n\n\n")
-    # print("mpso_values")
-    # print(mpso_values)
-    # print("\n\n\n")
+    print("benchmarkFunctionsIterations")
+    print(benchmarkFunctionsIterations)
 
 
 custom_particle_swarm_optimization_comparison()
