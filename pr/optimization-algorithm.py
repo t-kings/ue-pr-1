@@ -1,19 +1,18 @@
-import random
 from enum import Enum
 from benchmark_functions import (
     sphere_function,
     calculate_step_2_function_value,
-    rosenbrocks_banana_function,
+    quartic_function,
+    schwefel_2_21_function,
+    schwefel_2_22_function,
+    six_hump_camel_back,
+    rastrigin,
+    griewank_function,
+    branin_function,
+    ackley_function,
 )
 
-min_range = -100
-max_range = 100
-
-
-def generate_random_in_range(min_param=min_range, max_param=max_range):
-    random_number = random.uniform(min_param, max_param)
-    rounded_number = round(random_number, 2)
-    return rounded_number
+from helpers import generate_random_in_range
 
 
 class AlgorithmsEnum(Enum):
@@ -22,9 +21,16 @@ class AlgorithmsEnum(Enum):
 
 
 class BenchmarkFunctionEnum(Enum):
-    Sphere_Function = "sphere_function"
-    Step_2_Function = "step_2_Function"
-    rosenbrocks_banana_function = "rosenbrocks_banana_function"
+    sphere_function = "sphere_function"
+    calculate_step_2_function_value = "calculate_step_2_function_value"
+    quartic_function = "quartic_function"
+    schwefel_2_21_function = "schwefel_2_21_function"
+    schwefel_2_22_function = "schwefel_2_22_function"
+    six_hump_camel_back = "six_hump_camel_back"
+    rastrigin = "rastrigin"
+    griewank_function = "griewank_function"
+    branin_function = "branin_function"
+    ackley_function = "ackley_function"
 
 
 def calculate_particle_p_best(iteration_particles, previous_iteration_particles):
@@ -67,35 +73,82 @@ def calculate_particle_value_with_algorithm(
     particles, benchmark_function: BenchmarkFunctionEnum
 ):
     for particle_data in particles.values():
-        if benchmark_function == BenchmarkFunctionEnum.Sphere_Function:
+        if benchmark_function == BenchmarkFunctionEnum.sphere_function:
             particle_data["function_value"] = sphere_function(
                 particle_data["position"].values()
             )
-        if benchmark_function == BenchmarkFunctionEnum.Step_2_Function:
+        if benchmark_function == BenchmarkFunctionEnum.calculate_step_2_function_value:
             particle_data["function_value"] = calculate_step_2_function_value(
                 particle_data["position"].values()
             )
-        if benchmark_function == BenchmarkFunctionEnum.rosenbrocks_banana_function:
-            particle_data["function_value"] = rosenbrocks_banana_function(
+        if benchmark_function == BenchmarkFunctionEnum.quartic_function:
+            particle_data["function_value"] = quartic_function(
+                particle_data["position"].values()
+            )
+        if benchmark_function == BenchmarkFunctionEnum.schwefel_2_21_function:
+            particle_data["function_value"] = schwefel_2_21_function(
+                particle_data["position"].values()
+            )
+        if benchmark_function == BenchmarkFunctionEnum.schwefel_2_22_function:
+            particle_data["function_value"] = schwefel_2_22_function(
+                particle_data["position"].values()
+            )
+        if benchmark_function == BenchmarkFunctionEnum.six_hump_camel_back:
+            particle_data["function_value"] = six_hump_camel_back(
+                particle_data["position"].values()[0],
+                particle_data["position"].values()[1],
+            )
+        if benchmark_function == BenchmarkFunctionEnum.rastrigin:
+            particle_data["function_value"] = rastrigin(
+                particle_data["position"].values()[0],
+                particle_data["position"].values()[1],
+            )
+        if benchmark_function == BenchmarkFunctionEnum.griewank_function:
+            particle_data["function_value"] = griewank_function(
+                particle_data["position"].values()
+            )
+        if benchmark_function == BenchmarkFunctionEnum.branin_function:
+            particle_data["function_value"] = branin_function(
+                particle_data["position"].values()[0],
+                particle_data["position"].values()[1],
+            )
+        if benchmark_function == BenchmarkFunctionEnum.ackley_function:
+            particle_data["function_value"] = ackley_function(
                 particle_data["position"].values()
             )
 
     return particles
 
 
+def get_range_per_benchmark_function(benchmarkFunction: BenchmarkFunctionEnum):
+    ranges = {
+        BenchmarkFunctionEnum.sphere_function: [-100, 100],
+        BenchmarkFunctionEnum.calculate_step_2_function_value: [-10, 10],
+        BenchmarkFunctionEnum.quartic_function: [-2.56, 2.56],
+        BenchmarkFunctionEnum.schwefel_2_21_function: [-100, 100],
+        BenchmarkFunctionEnum.schwefel_2_22_function: [-10, 10],
+        BenchmarkFunctionEnum.six_hump_camel_back: [-5, 5],
+        BenchmarkFunctionEnum.rastrigin: [-50, 50],
+        BenchmarkFunctionEnum.griewank_function: [-600, 600],
+        BenchmarkFunctionEnum.branin_function: [-5, 5],
+        BenchmarkFunctionEnum.ackley_function: [-32, 32],
+    }
+    return ranges[benchmarkFunction]
+
+
 def generate_initial_particles_with_positions_and_velocities(
-    number_of_particles: int,
-    number_of_coordinates: int,
+    number_of_particles: int, number_of_coordinates: int, benchmarkFunction
 ):
     particles = {}
     for i in range(number_of_particles):
         position = {}
         velocity = {}
+        min_range, max_range = get_range_per_benchmark_function(benchmarkFunction)
         for coordinate in range(number_of_coordinates):
             random_position = generate_random_in_range()
             position[coordinate + 1] = random_position
 
-            random_velocity = generate_random_in_range()
+            random_velocity = generate_random_in_range(min_range, max_range)
             velocity[coordinate + 1] = random_velocity
 
         particle = {"position": position, "velocity": velocity}
@@ -228,11 +281,14 @@ def get_iteration_value(
 
 
 def get_algorithm_values(
-    particles, algorithm: AlgorithmsEnum, benchmarkFunction: BenchmarkFunctionEnum
+    algorithm: AlgorithmsEnum, benchmarkFunction: BenchmarkFunctionEnum
 ):
     is_stopping_criteria_reached = False
     iterations = {}
     iteration_count = 1
+    particles = generate_initial_particles_with_positions_and_velocities(
+        6, 2, benchmarkFunction
+    )
     while not is_stopping_criteria_reached:
         previous_iteration = iterations.get(
             iteration_count - 1, {"particles": particles}
@@ -249,24 +305,23 @@ def get_algorithm_values(
 
 
 def custom_particle_swarm_optimization_comparison():
-    particles = generate_initial_particles_with_positions_and_velocities(
-        6,
-        2,
-    )
     benchmarkFunctions = [
-        BenchmarkFunctionEnum.Sphere_Function,
-        BenchmarkFunctionEnum.Step_2_Function,
-        BenchmarkFunctionEnum.rosenbrocks_banana_function,
+        BenchmarkFunctionEnum.sphere_function,
+        BenchmarkFunctionEnum.calculate_step_2_function_value,
+        BenchmarkFunctionEnum.quartic_function,
+        BenchmarkFunctionEnum.schwefel_2_21_function,
+        BenchmarkFunctionEnum.schwefel_2_22_function,
+        BenchmarkFunctionEnum.six_hump_camel_back,
+        BenchmarkFunctionEnum.rastrigin,
+        BenchmarkFunctionEnum.griewank_function,
+        BenchmarkFunctionEnum.branin_function,
+        BenchmarkFunctionEnum.ackley_function,
     ]
     benchmarkFunctionsIterations = {}
     for benchmarkFunction in benchmarkFunctions:
         benchmarkFunctionsIterations[benchmarkFunction] = {
-            "pso_values": get_algorithm_values(
-                particles, AlgorithmsEnum.PSO, benchmarkFunction
-            ),
-            "mpso_values": get_algorithm_values(
-                particles, AlgorithmsEnum.MPSO, benchmarkFunction
-            ),
+            "pso_values": get_algorithm_values(AlgorithmsEnum.PSO, benchmarkFunction),
+            "mpso_values": get_algorithm_values(AlgorithmsEnum.MPSO, benchmarkFunction),
         }
 
     # print("benchmarkFunctionsIterations")

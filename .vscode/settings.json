@@ -1,3 +1,12 @@
 {
-  "cSpell.words": ["mpso"]
+  "cSpell.words": [
+    "ackley",
+    "arange",
+    "branin",
+    "griewank",
+    "mpso",
+    "rastrigin",
+    "rosenbrocks",
+    "schwefel"
+  ]
 }
