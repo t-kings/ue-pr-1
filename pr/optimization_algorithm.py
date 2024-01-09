@@ -287,8 +287,10 @@ def get_algorithm_values(algorithm, benchmark_function, particles):
     iteration_g_bests = list(
         map(lambda obj: obj["g_best"]["value"], iterations.values())
     )
-    iteration_g_bests_standard_deviation = statistics.pstdev(iteration_g_bests)
-    iteration_g_bests_mean = statistics.mean(iteration_g_bests)
+    iteration_g_bests_standard_deviation = round(
+        statistics.pstdev(iteration_g_bests), 2
+    )
+    iteration_g_bests_mean = round(statistics.mean(iteration_g_bests), 2)
     return {
         "iteration_count": len(iterations),
         "standard_deviation": iteration_g_bests_standard_deviation,
@@ -304,9 +306,13 @@ def calculate_algorithms_with_benchmark_functions(benchmark_function):
         AlgorithmsEnum.MPSO, benchmark_function, particles
     )
     pso_values = get_algorithm_values(AlgorithmsEnum.PSO, benchmark_function, particles)
-    t_test = (mpso_values["mean"] - pso_values["mean"]) / math.sqrt(
-        ((mpso_values["standard_deviation"] ** 2) / mpso_values["iteration_count"])
-        + ((pso_values["standard_deviation"] ** 2) / pso_values["iteration_count"])
+    t_test = round(
+        (mpso_values["mean"] - pso_values["mean"])
+        / math.sqrt(
+            ((mpso_values["standard_deviation"] ** 2) / mpso_values["iteration_count"])
+            + ((pso_values["standard_deviation"] ** 2) / pso_values["iteration_count"]),
+        ),
+        2,
     )
     better_algorithm = "mpso" if t_test >= 0 else "pso"
     return {
@@ -340,5 +346,3 @@ def custom_particle_swarm_optimization_comparison():
 
 
 comparison = custom_particle_swarm_optimization_comparison()
-
-print(comparison)
