@@ -77,11 +77,12 @@ def branin_function(x, y):
     return term1 + term2 + term3
 
 
-def ackley_function(x):
+def ackley_function(parameters):
+    x = np.array(list(parameters))
     a = 20
     b = 0.2
     c = 2 * np.pi
-    term1 = -a * np.exp(-b * np.sqrt(np.sum(x**2) / len(x)))
+    term1 = -a * np.exp(-b * np.sqrt(np.sum(x**2) / len(x)))  # type: ignore
     term2 = -np.exp(np.sum(np.cos(c * x) / len(x)))
     result = term1 + term2 + a + np.exp(1)
     return result

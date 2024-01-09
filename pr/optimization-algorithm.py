@@ -95,13 +95,13 @@ def calculate_particle_value_with_algorithm(
             )
         if benchmark_function == BenchmarkFunctionEnum.six_hump_camel_back:
             particle_data["function_value"] = six_hump_camel_back(
-                particle_data["position"].values()[0],
-                particle_data["position"].values()[1],
+                particle_data["position"][1],
+                particle_data["position"][2],
             )
         if benchmark_function == BenchmarkFunctionEnum.rastrigin:
             particle_data["function_value"] = rastrigin(
-                particle_data["position"].values()[0],
-                particle_data["position"].values()[1],
+                particle_data["position"][1],
+                particle_data["position"][2],
             )
         if benchmark_function == BenchmarkFunctionEnum.griewank_function:
             particle_data["function_value"] = griewank_function(
@@ -109,8 +109,8 @@ def calculate_particle_value_with_algorithm(
             )
         if benchmark_function == BenchmarkFunctionEnum.branin_function:
             particle_data["function_value"] = branin_function(
-                particle_data["position"].values()[0],
-                particle_data["position"].values()[1],
+                particle_data["position"][1],
+                particle_data["position"][2],
             )
         if benchmark_function == BenchmarkFunctionEnum.ackley_function:
             particle_data["function_value"] = ackley_function(
@@ -280,6 +280,31 @@ def get_iteration_value(
     return iteration
 
 
+def get_is_stopping_criteria_reached(benchmark_function: BenchmarkFunctionEnum, g_best):
+    if benchmark_function == BenchmarkFunctionEnum.sphere_function:
+        return g_best == 0
+    if benchmark_function == BenchmarkFunctionEnum.calculate_step_2_function_value:
+        return g_best == 0
+    if benchmark_function == BenchmarkFunctionEnum.quartic_function:
+        return g_best == 0
+    if benchmark_function == BenchmarkFunctionEnum.schwefel_2_21_function:
+        return g_best == 0
+    if benchmark_function == BenchmarkFunctionEnum.schwefel_2_22_function:
+        return g_best == 0
+    if benchmark_function == BenchmarkFunctionEnum.six_hump_camel_back:
+        return (g_best <= 0.0898 and g_best >= -0.7126) or (
+            g_best >= -0.0898 and g_best <= 0.7126
+        )
+    if benchmark_function == BenchmarkFunctionEnum.rastrigin:
+        return g_best == 0
+    if benchmark_function == BenchmarkFunctionEnum.griewank_function:
+        return g_best == 0
+    if benchmark_function == BenchmarkFunctionEnum.branin_function:
+        return g_best == 0.398
+    if benchmark_function == BenchmarkFunctionEnum.ackley_function:
+        return g_best == 0
+
+
 def get_algorithm_values(
     algorithm: AlgorithmsEnum, benchmarkFunction: BenchmarkFunctionEnum
 ):
@@ -297,7 +322,12 @@ def get_algorithm_values(
             iteration_count, previous_iteration, algorithm, benchmarkFunction
         )
         iterations[iteration_count] = iteration
-        if iteration["g_best"]["value"] == 0 or iteration_count > 100:
+        if (
+            get_is_stopping_criteria_reached(
+                benchmarkFunction, iteration["g_best"]["value"]
+            )
+            or iteration_count > 1000
+        ):
             is_stopping_criteria_reached = True
             print(algorithm, benchmarkFunction, "iteration_count", iteration_count)
         iteration_count += 1
