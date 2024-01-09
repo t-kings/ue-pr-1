@@ -6,9 +6,7 @@ def sphere_function(parameters):
     return np.sum(np.array(list(parameters)) ** 2)
 
 
-def calculate_step_2_function_value(
-    parameters,
-):
+def calculate_step_2_function_value(parameters):
     value = 0.00
     for parameter in parameters:
         try:
