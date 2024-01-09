@@ -22,16 +22,16 @@ class AlgorithmsEnum(Enum):
 
 
 class BenchmarkFunctionEnum(Enum):
-    sphere_function = "sphere_function"
-    calculate_step_2_function_value = "calculate_step_2_function_value"
-    quartic_function = "quartic_function"
-    schwefel_2_21_function = "schwefel_2_21_function"
-    schwefel_2_22_function = "schwefel_2_22_function"
-    six_hump_camel_back = "six_hump_camel_back"
-    rastrigin = "rastrigin"
-    griewank_function = "griewank_function"
-    branin_function = "branin_function"
-    ackley_function = "ackley_function"
+    SPHERE_FUNCTION = "sphere_function"
+    CALCULATE_STEP_2_FUNCTION_VALUE = "calculate_step_2_function_value"
+    QUARTIC_FUNCTION = "quartic_function"
+    SCHWEFEL_2_21_FUNCTION = "schwefel_2_21_function"
+    SCHWEFEL_2_22_FUNCTION = "schwefel_2_22_function"
+    SIX_HUMP_CAMEL_BACK = "six_hump_camel_back"
+    RASTRIGIN = "rastrigin"
+    GRIEWANK_FUNCTION = "griewank_function"
+    BRANIN_FUNCTION = "branin_function"
+    ACKLEY_FUNCTION = "ackley_function"
 
 
 def calculate_particle_p_best(iteration_particles, previous_iteration_particles):
@@ -50,7 +50,7 @@ def calculate_particle_p_best(iteration_particles, previous_iteration_particles)
     return iteration_particles
 
 
-def calculate_iteration_g_best(iteration_particles, previous_Iteration_g_best):
+def calculate_iteration_g_best(iteration_particles, previous_iteration_g_best):
     min_particle_p_best_value = float("inf")
     min_particle_p_best_position = None
     for particle_data in iteration_particles.values():
@@ -59,80 +59,75 @@ def calculate_iteration_g_best(iteration_particles, previous_Iteration_g_best):
             min_particle_p_best_value = particle_p_best_value
             min_particle_p_best_position = particle_data["position"]
 
-    previous_Iteration_g_best_value = previous_Iteration_g_best.get(
+    previous_iteration_g_best_value = previous_iteration_g_best.get(
         "value", float("inf")
     )
-    if min_particle_p_best_value < previous_Iteration_g_best_value:
+    if min_particle_p_best_value < previous_iteration_g_best_value:
         return {
             "value": min_particle_p_best_value,
             "position": min_particle_p_best_position,
         }
-    return previous_Iteration_g_best
+    return previous_iteration_g_best
 
 
-def calculate_particle_value_with_algorithm(
-    particles, benchmark_function: BenchmarkFunctionEnum
-):
+def calculate_particle_value_with_algorithm(particles, benchmark_function):
     for particle_data in particles.values():
         res = 0
-        if benchmark_function == BenchmarkFunctionEnum.sphere_function:
+        if benchmark_function == BenchmarkFunctionEnum.SPHERE_FUNCTION:
             res = sphere_function(particle_data["position"].values())
-        if benchmark_function == BenchmarkFunctionEnum.calculate_step_2_function_value:
+        elif (
+            benchmark_function == BenchmarkFunctionEnum.CALCULATE_STEP_2_FUNCTION_VALUE
+        ):
             res = calculate_step_2_function_value(particle_data["position"].values())
-        if benchmark_function == BenchmarkFunctionEnum.quartic_function:
+        elif benchmark_function == BenchmarkFunctionEnum.QUARTIC_FUNCTION:
             res = quartic_function(particle_data["position"].values())
-        if benchmark_function == BenchmarkFunctionEnum.schwefel_2_21_function:
+        elif benchmark_function == BenchmarkFunctionEnum.SCHWEFEL_2_21_FUNCTION:
             res = schwefel_2_21_function(particle_data["position"].values())
-        if benchmark_function == BenchmarkFunctionEnum.schwefel_2_22_function:
+        elif benchmark_function == BenchmarkFunctionEnum.SCHWEFEL_2_22_FUNCTION:
             res = schwefel_2_22_function(particle_data["position"].values())
-        if benchmark_function == BenchmarkFunctionEnum.six_hump_camel_back:
+        elif benchmark_function == BenchmarkFunctionEnum.SIX_HUMP_CAMEL_BACK:
             res = six_hump_camel_back(
-                particle_data["position"][1],
-                particle_data["position"][2],
+                particle_data["position"][1], particle_data["position"][2]
             )
-        if benchmark_function == BenchmarkFunctionEnum.rastrigin:
-            res = rastrigin(
-                particle_data["position"][1],
-                particle_data["position"][2],
-            )
-        if benchmark_function == BenchmarkFunctionEnum.griewank_function:
+        elif benchmark_function == BenchmarkFunctionEnum.RASTRIGIN:
+            res = rastrigin(particle_data["position"][1], particle_data["position"][2])
+        elif benchmark_function == BenchmarkFunctionEnum.GRIEWANK_FUNCTION:
             res = griewank_function(particle_data["position"].values())
-        if benchmark_function == BenchmarkFunctionEnum.branin_function:
+        elif benchmark_function == BenchmarkFunctionEnum.BRANIN_FUNCTION:
             res = branin_function(
-                particle_data["position"][1],
-                particle_data["position"][2],
+                particle_data["position"][1], particle_data["position"][2]
             )
-        if benchmark_function == BenchmarkFunctionEnum.ackley_function:
+        elif benchmark_function == BenchmarkFunctionEnum.ACKLEY_FUNCTION:
             res = ackley_function(particle_data["position"].values())
 
         particle_data["function_value"] = round(res, 2)
     return particles
 
 
-def get_range_per_benchmark_function(benchmarkFunction: BenchmarkFunctionEnum):
+def get_range_per_benchmark_function(benchmark_function):
     ranges = {
-        BenchmarkFunctionEnum.sphere_function: [-100, 100],
-        BenchmarkFunctionEnum.calculate_step_2_function_value: [-10, 10],
-        BenchmarkFunctionEnum.quartic_function: [-2.56, 2.56],
-        BenchmarkFunctionEnum.schwefel_2_21_function: [-100, 100],
-        BenchmarkFunctionEnum.schwefel_2_22_function: [-10, 10],
-        BenchmarkFunctionEnum.six_hump_camel_back: [-5, 5],
-        BenchmarkFunctionEnum.rastrigin: [-50, 50],
-        BenchmarkFunctionEnum.griewank_function: [-600, 600],
-        BenchmarkFunctionEnum.branin_function: [-5, 5],
-        BenchmarkFunctionEnum.ackley_function: [-32, 32],
+        BenchmarkFunctionEnum.SPHERE_FUNCTION: [-100, 100],
+        BenchmarkFunctionEnum.CALCULATE_STEP_2_FUNCTION_VALUE: [-10, 10],
+        BenchmarkFunctionEnum.QUARTIC_FUNCTION: [-2.56, 2.56],
+        BenchmarkFunctionEnum.SCHWEFEL_2_21_FUNCTION: [-100, 100],
+        BenchmarkFunctionEnum.SCHWEFEL_2_22_FUNCTION: [-10, 10],
+        BenchmarkFunctionEnum.SIX_HUMP_CAMEL_BACK: [-5, 5],
+        BenchmarkFunctionEnum.RASTRIGIN: [-50, 50],
+        BenchmarkFunctionEnum.GRIEWANK_FUNCTION: [-600, 600],
+        BenchmarkFunctionEnum.BRANIN_FUNCTION: [-5, 5],
+        BenchmarkFunctionEnum.ACKLEY_FUNCTION: [-32, 32],
     }
-    return ranges[benchmarkFunction]
+    return ranges[benchmark_function]
 
 
 def generate_initial_particles_with_positions_and_velocities(
-    number_of_particles: int, number_of_coordinates: int, benchmarkFunction
+    number_of_particles, number_of_coordinates, benchmark_function
 ):
     particles = {}
     for i in range(number_of_particles):
         position = {}
         velocity = {}
-        min_range, max_range = get_range_per_benchmark_function(benchmarkFunction)
+        min_range, max_range = get_range_per_benchmark_function(benchmark_function)
         for coordinate in range(number_of_coordinates):
             random_position = generate_random_in_range(min_range, max_range)
             position[coordinate + 1] = random_position
@@ -146,12 +141,7 @@ def generate_initial_particles_with_positions_and_velocities(
 
 
 def generate_velocity(
-    algorithm: AlgorithmsEnum,
-    iteration_count,
-    previous_velocity,
-    personal_best,
-    position,
-    global_best,
+    algorithm, iteration_count, previous_velocity, personal_best, position, global_best
 ):
     res = 0
     if algorithm == AlgorithmsEnum.MPSO:
@@ -172,8 +162,7 @@ def generate_velocity(
             + c2 * r2 * (global_best - position),
             2,
         )
-
-    if algorithm == AlgorithmsEnum.PSO:
+    elif algorithm == AlgorithmsEnum.PSO:
         inertia = 0.05
         particle_influence = 0.5
         global_influence = 2.5
@@ -188,28 +177,19 @@ def generate_velocity(
     return res
 
 
-def generate_position(
-    algorithm: AlgorithmsEnum,
-    velocity,
-    previous_position,
-):
+def generate_position(algorithm, velocity, previous_position):
     res = 0
-    if algorithm == AlgorithmsEnum.MPSO:
-        res = velocity + previous_position
-    if algorithm == AlgorithmsEnum.PSO:
+    if algorithm in [AlgorithmsEnum.MPSO, AlgorithmsEnum.PSO]:
         res = velocity + previous_position
     return round(res, 2)
 
 
 def generate_particles_with_positions_and_velocities_and_algorithm(
-    previous_iteration_particles,
-    algorithm: AlgorithmsEnum,
-    iteration_count,
-    previous_iteration_g_best,
+    previous_iteration_particles, algorithm, iteration_count, previous_iteration_g_best
 ):
     particles = {}
     for (
-        previous_Particle,
+        previous_particle,
         previous_particle_data,
     ) in previous_iteration_particles.items():
         position = {}
@@ -231,72 +211,59 @@ def generate_particles_with_positions_and_velocities_and_algorithm(
                 previous_particle_data["position"][previous_velocity],
             )
         particle = {"position": position, "velocity": velocity}
-        particles[previous_Particle] = particle
+        particles[previous_particle] = particle
     return particles
 
 
 def get_iteration_value(
-    iteration_count,
-    previous_Iteration,
-    algorithm: AlgorithmsEnum,
-    benchmarkFunction: BenchmarkFunctionEnum,
+    iteration_count, previous_iteration, algorithm, benchmark_function
 ):
     iteration = {}
     if iteration_count != 1:
         iteration[
             "particles"
         ] = generate_particles_with_positions_and_velocities_and_algorithm(
-            previous_Iteration["particles"],
+            previous_iteration["particles"],
             algorithm,
             iteration_count,
-            previous_Iteration["g_best"],
+            previous_iteration["g_best"],
         )
     else:
-        iteration = previous_Iteration
+        iteration = previous_iteration
 
     particles = calculate_particle_value_with_algorithm(
-        iteration["particles"], benchmarkFunction
+        iteration["particles"], benchmark_function
     )
 
     iteration["particles"] = calculate_particle_p_best(
-        particles, previous_Iteration["particles"]
+        particles, previous_iteration["particles"]
     )
 
     iteration["g_best"] = calculate_iteration_g_best(
         iteration["particles"],
-        previous_Iteration.get("g_best", {}),
+        previous_iteration.get("g_best", {}),
     )
     return iteration
 
 
-def get_is_stopping_criteria_reached(benchmark_function: BenchmarkFunctionEnum, g_best):
-    if benchmark_function == BenchmarkFunctionEnum.sphere_function:
-        return g_best == 0
-    if benchmark_function == BenchmarkFunctionEnum.calculate_step_2_function_value:
-        return g_best == 0
-    if benchmark_function == BenchmarkFunctionEnum.quartic_function:
-        return g_best == 0
-    if benchmark_function == BenchmarkFunctionEnum.schwefel_2_21_function:
-        return g_best == 0
-    if benchmark_function == BenchmarkFunctionEnum.schwefel_2_22_function:
-        return g_best == 0
-    if benchmark_function == BenchmarkFunctionEnum.six_hump_camel_back:
-        return (g_best <= 0.0898 and g_best >= -0.7126) or (
-            g_best >= -0.0898 and g_best <= 0.7126
-        )
-    if benchmark_function == BenchmarkFunctionEnum.rastrigin:
-        return g_best == 0
-    if benchmark_function == BenchmarkFunctionEnum.griewank_function:
-        return g_best == 0
-    if benchmark_function == BenchmarkFunctionEnum.branin_function:
-        return g_best == 0.398
-    if benchmark_function == BenchmarkFunctionEnum.ackley_function:
-        return g_best == 0
+def get_is_stopping_criteria_reached(benchmark_function, g_best):
+    stopping_criteria = {
+        BenchmarkFunctionEnum.SPHERE_FUNCTION: g_best == 0,
+        BenchmarkFunctionEnum.CALCULATE_STEP_2_FUNCTION_VALUE: g_best == 0,
+        BenchmarkFunctionEnum.QUARTIC_FUNCTION: g_best == 0,
+        BenchmarkFunctionEnum.SCHWEFEL_2_21_FUNCTION: g_best == 0,
+        BenchmarkFunctionEnum.SCHWEFEL_2_22_FUNCTION: g_best == 0,
+        BenchmarkFunctionEnum.SIX_HUMP_CAMEL_BACK: (0.0898 >= g_best >= -0.7126)
+        or (-0.0898 <= g_best <= 0.7126),
+        BenchmarkFunctionEnum.RASTRIGIN: g_best == 0,
+        BenchmarkFunctionEnum.GRIEWANK_FUNCTION: g_best == 0,
+        BenchmarkFunctionEnum.BRANIN_FUNCTION: g_best == 0.398,
+        BenchmarkFunctionEnum.ACKLEY_FUNCTION: g_best == 0,
+    }
+    return stopping_criteria.get(benchmark_function, False)
 
 
-def get_algorithm_values(
-    algorithm: AlgorithmsEnum, benchmarkFunction: BenchmarkFunctionEnum, particles
-):
+def get_algorithm_values(algorithm, benchmark_function, particles):
     is_stopping_criteria_reached = False
     iterations = {}
     iteration_count = 1
@@ -305,13 +272,13 @@ def get_algorithm_values(
             iteration_count - 1, {"particles": particles}
         )
         iteration = get_iteration_value(
-            iteration_count, previous_iteration, algorithm, benchmarkFunction
+            iteration_count, previous_iteration, algorithm, benchmark_function
         )
 
         iterations[iteration_count] = iteration
         if (
             get_is_stopping_criteria_reached(
-                benchmarkFunction, iteration["g_best"]["value"]
+                benchmark_function, iteration["g_best"]["value"]
             )
             or iteration_count == 200
         ):
@@ -329,23 +296,21 @@ def get_algorithm_values(
     }
 
 
-def calculate_algorithms_with_benchmark_functions(
-    benchmarkFunction: BenchmarkFunctionEnum,
-):
+def calculate_algorithms_with_benchmark_functions(benchmark_function):
     particles = generate_initial_particles_with_positions_and_velocities(
-        6, 2, benchmarkFunction
+        6, 2, benchmark_function
     )
     mpso_values = get_algorithm_values(
-        AlgorithmsEnum.MPSO, benchmarkFunction, particles
+        AlgorithmsEnum.MPSO, benchmark_function, particles
     )
-    pso_values = get_algorithm_values(AlgorithmsEnum.PSO, benchmarkFunction, particles)
+    pso_values = get_algorithm_values(AlgorithmsEnum.PSO, benchmark_function, particles)
     t_test = (mpso_values["mean"] - pso_values["mean"]) / math.sqrt(
         ((mpso_values["standard_deviation"] ** 2) / mpso_values["iteration_count"])
         + ((pso_values["standard_deviation"] ** 2) / pso_values["iteration_count"])
     )
     better_algorithm = "mpso" if t_test >= 0 else "pso"
     return {
-        "benchmarkFunction": benchmarkFunction,
+        "benchmarkFunction": benchmark_function,
         "mpso_values": mpso_values,
         "pso_values": pso_values,
         "t_test": t_test,
@@ -354,26 +319,26 @@ def calculate_algorithms_with_benchmark_functions(
 
 
 def custom_particle_swarm_optimization_comparison():
-    benchmarkFunctions = [
-        BenchmarkFunctionEnum.sphere_function,
-        BenchmarkFunctionEnum.calculate_step_2_function_value,
-        BenchmarkFunctionEnum.quartic_function,
-        BenchmarkFunctionEnum.schwefel_2_21_function,
-        BenchmarkFunctionEnum.schwefel_2_22_function,
-        BenchmarkFunctionEnum.six_hump_camel_back,
-        BenchmarkFunctionEnum.rastrigin,
-        BenchmarkFunctionEnum.griewank_function,
-        BenchmarkFunctionEnum.branin_function,
-        BenchmarkFunctionEnum.ackley_function,
+    benchmark_functions = [
+        BenchmarkFunctionEnum.SPHERE_FUNCTION,
+        BenchmarkFunctionEnum.CALCULATE_STEP_2_FUNCTION_VALUE,
+        BenchmarkFunctionEnum.QUARTIC_FUNCTION,
+        BenchmarkFunctionEnum.SCHWEFEL_2_21_FUNCTION,
+        BenchmarkFunctionEnum.SCHWEFEL_2_22_FUNCTION,
+        BenchmarkFunctionEnum.SIX_HUMP_CAMEL_BACK,
+        BenchmarkFunctionEnum.RASTRIGIN,
+        BenchmarkFunctionEnum.GRIEWANK_FUNCTION,
+        BenchmarkFunctionEnum.BRANIN_FUNCTION,
+        BenchmarkFunctionEnum.ACKLEY_FUNCTION,
     ]
-    benchmarkFunctionsIterations = {}
-    for benchmarkFunction in benchmarkFunctions:
-        benchmarkFunctionsIterations[
-            benchmarkFunction
-        ] = calculate_algorithms_with_benchmark_functions(benchmarkFunction)
-        print(benchmarkFunctionsIterations[benchmarkFunction])
-        print("=======================================================")
-    return benchmarkFunctionsIterations
+    benchmark_functions_iterations = {}
+    for benchmark_function in benchmark_functions:
+        benchmark_functions_iterations[
+            benchmark_function
+        ] = calculate_algorithms_with_benchmark_functions(benchmark_function)
+    return benchmark_functions_iterations
 
 
-custom_particle_swarm_optimization_comparison()
+comparison = custom_particle_swarm_optimization_comparison()
+
+print(comparison)
