@@ -373,6 +373,7 @@ def custom_particle_swarm_optimization_comparison():
         ] = calculate_algorithms_with_benchmark_functions(benchmarkFunction)
         print(benchmarkFunctionsIterations[benchmarkFunction])
         print("=======================================================")
+    return benchmarkFunctionsIterations
 
 
 custom_particle_swarm_optimization_comparison()
