@@ -14,6 +14,7 @@ from benchmark_functions import (
 import statistics
 import math
 from helpers import generate_random_in_range
+import numpy as np
 
 
 class AlgorithmsEnum(Enum):
@@ -157,36 +158,33 @@ def generate_velocity(
         c1 = c1 - change_rate
         c2 = c2 + change_rate
         inertia = inertia / iteration_count
-        res = round(
-            inertia * previous_velocity
-            + c1 * r1 * (personal_best - position)
-            + c2 * r2 * (global_best - position),
-            2,
-        )
-    elif algorithm == AlgorithmsEnum.PSO:
-        res = round(
-            inertia * previous_velocity
-            + c1 * r1 * (personal_best - position)
-            + c2 * r2 * (global_best - position),
-            2,
-        )
-    elif algorithm == AlgorithmsEnum.MPSO2:
-        inertia = (2 / iteration_count) ** 0.3
-        res = round(
-            inertia * previous_velocity
-            + c1 * r1 * (personal_best - position)
-            + c2 * r2 * (global_best - position),
-            2,
-        )
-    elif algorithm == AlgorithmsEnum.MPSO1:
-        res = round(
+        res = (
             inertia * previous_velocity
             + c1 * r1 * (personal_best - position)
             + c2 * r2 * (global_best - position)
-            + inertia * (c1 / c2) * (personal_best - global_best),
-            2,
         )
-    return res
+    elif algorithm == AlgorithmsEnum.PSO:
+        res = (
+            inertia * previous_velocity
+            + c1 * r1 * (personal_best - position)
+            + c2 * r2 * (global_best - position)
+        )
+    elif algorithm == AlgorithmsEnum.MPSO2:
+        inertia = (2 / iteration_count) ** 0.3
+        res = (
+            inertia * previous_velocity
+            + c1 * r1 * (personal_best - position)
+            + c2 * r2 * (global_best - position)
+        )
+    elif algorithm == AlgorithmsEnum.MPSO1:
+        res = (
+            inertia * previous_velocity
+            + c1 * r1 * (personal_best - position)
+            + c2 * r2 * (global_best - position)
+            + inertia * (c1 / c2) * (personal_best - global_best)
+        )
+    res = np.clip(res, -10, 10)
+    return np.round(res, 2)
 
 
 def generate_position(algorithm, velocity, previous_position):
@@ -196,7 +194,7 @@ def generate_position(algorithm, velocity, previous_position):
     elif algorithm == AlgorithmsEnum.MPSO1:
         inertia = 0.05
         res = velocity + previous_position * inertia
-    return round(res, 2)
+    return np.round(res, 2)
 
 
 def generate_particles_with_positions_and_velocities_and_algorithm(
@@ -295,7 +293,7 @@ def get_algorithm_values(algorithm, benchmark_function, particles):
             get_is_stopping_criteria_reached(
                 benchmark_function, iteration["g_best"]["value"]
             )
-            or iteration_count == 500
+            or iteration_count == 10000
         ):
             is_stopping_criteria_reached = True
         iteration_count += 1
@@ -346,9 +344,13 @@ def calculate_algorithms_with_benchmark_functions(benchmark_function):
                 "standard_deviation"
             ]
             a_iteration_count = pso_algorithms_values[pso_algorithm]["iteration_count"]
-            denominator = math.sqrt(
-                ((mpso_standard_deviation**2) / mpso_iteration_count)
-                + ((a_standard_deviation**2) / a_iteration_count),
+            denominator = (
+                math.sqrt(
+                    ((mpso_standard_deviation**2) / mpso_iteration_count)
+                    + ((a_standard_deviation**2) / a_iteration_count),
+                )
+                if mpso_iteration_count != 0 and a_iteration_count != 0
+                else 0
             )
 
             t_test = (
