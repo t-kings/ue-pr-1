@@ -295,7 +295,7 @@ def get_algorithm_values(algorithm, benchmark_function, particles):
             get_is_stopping_criteria_reached(
                 benchmark_function, iteration["g_best"]["value"]
             )
-            or iteration_count == 200
+            or iteration_count == 500
         ):
             is_stopping_criteria_reached = True
         iteration_count += 1
@@ -307,7 +307,7 @@ def get_algorithm_values(algorithm, benchmark_function, particles):
     )
     iteration_g_bests_mean = round(statistics.mean(iteration_g_bests), 2)
     return {
-        "iteration_count": len(iterations),
+        "iteration_count": len(iterations) - 1,
         "standard_deviation": iteration_g_bests_standard_deviation,
         "mean": iteration_g_bests_mean,
     }
