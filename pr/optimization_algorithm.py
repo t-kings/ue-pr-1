@@ -17,21 +17,23 @@ from helpers import generate_random_in_range
 
 
 class AlgorithmsEnum(Enum):
-    PSO = "pso"
-    MPSO = "mpso"
+    PSO = "PSO"
+    MPSO = "MPSO"
+    MPSO1 = "MPSO-1"
+    MPSO2 = "MPSO-2"
 
 
 class BenchmarkFunctionEnum(Enum):
-    SPHERE_FUNCTION = "sphere_function"
-    CALCULATE_STEP_2_FUNCTION_VALUE = "calculate_step_2_function_value"
-    QUARTIC_FUNCTION = "quartic_function"
-    SCHWEFEL_2_21_FUNCTION = "schwefel_2_21_function"
-    SCHWEFEL_2_22_FUNCTION = "schwefel_2_22_function"
-    SIX_HUMP_CAMEL_BACK = "six_hump_camel_back"
-    RASTRIGIN = "rastrigin"
-    GRIEWANK_FUNCTION = "griewank_function"
-    BRANIN_FUNCTION = "branin_function"
-    ACKLEY_FUNCTION = "ackley_function"
+    SPHERE_FUNCTION = "Sphere Function"
+    CALCULATE_STEP_2_FUNCTION_VALUE = "Calculate Step 2 Function Value"
+    QUARTIC_FUNCTION = "Quartic Function"
+    SCHWEFEL_2_21_FUNCTION = "Schwefel 2.21 Function"
+    SCHWEFEL_2_22_FUNCTION = "Schwefel 2.22 Function"
+    SIX_HUMP_CAMEL_BACK = "Six-Hump Camel Back"
+    RASTRIGIN = "Rastrigin Function"
+    GRIEWANK_FUNCTION = "Griewank Function"
+    BRANIN_FUNCTION = "Branin Function"
+    ACKLEY_FUNCTION = "Ackley Function"
 
 
 def calculate_particle_p_best(iteration_particles, previous_iteration_particles):
@@ -143,35 +145,45 @@ def generate_initial_particles_with_positions_and_velocities(
 def generate_velocity(
     algorithm, iteration_count, previous_velocity, personal_best, position, global_best
 ):
+    r1 = generate_random_in_range(0, 1)
+    r2 = generate_random_in_range(0, 1)
+    c1 = 0.5
+    c2 = 2.5
     res = 0
+    inertia = 0.05
     if algorithm == AlgorithmsEnum.MPSO:
-        inertia = 0.05
-        r1 = generate_random_in_range(0, 1)
-        r2 = generate_random_in_range(0, 1)
-        c1 = 0.5
-        c2 = 2.5
-        sum_of_c1_and_c2_average = (c1 + c2) / 2
-        change_rate = sum_of_c1_and_c2_average / (
-            iteration_count + sum_of_c1_and_c2_average
-        )
-        c1 = c1 + change_rate
-        c2 = c2 - change_rate
+        c_avg = (c1 + c2) / 2
+        change_rate = 1 - (c_avg / (iteration_count - 1 + c_avg))
+        c1 = c1 - change_rate
+        c2 = c2 + change_rate
+        inertia = inertia / iteration_count
         res = round(
-            (inertia / iteration_count) * previous_velocity
+            inertia * previous_velocity
             + c1 * r1 * (personal_best - position)
             + c2 * r2 * (global_best - position),
             2,
         )
     elif algorithm == AlgorithmsEnum.PSO:
-        inertia = 0.05
-        particle_influence = 0.5
-        global_influence = 2.5
-        r1 = generate_random_in_range(0, 1)
-        r2 = generate_random_in_range(0, 1)
         res = round(
-            (inertia) * previous_velocity
-            + particle_influence * r1 * (personal_best - position)
-            + global_influence * r2 * (global_best - position),
+            inertia * previous_velocity
+            + c1 * r1 * (personal_best - position)
+            + c2 * r2 * (global_best - position),
+            2,
+        )
+    elif algorithm == AlgorithmsEnum.MPSO2:
+        inertia = (2 / iteration_count) ** 0.3
+        res = round(
+            inertia * previous_velocity
+            + c1 * r1 * (personal_best - position)
+            + c2 * r2 * (global_best - position),
+            2,
+        )
+    elif algorithm == AlgorithmsEnum.MPSO1:
+        res = round(
+            inertia * previous_velocity
+            + c1 * r1 * (personal_best - position)
+            + c2 * r2 * (global_best - position)
+            + inertia * (c1 / c2) * (personal_best - global_best),
             2,
         )
     return res
@@ -179,8 +191,11 @@ def generate_velocity(
 
 def generate_position(algorithm, velocity, previous_position):
     res = 0
-    if algorithm in [AlgorithmsEnum.MPSO, AlgorithmsEnum.PSO]:
+    if algorithm in [AlgorithmsEnum.MPSO, AlgorithmsEnum.PSO, AlgorithmsEnum.MPSO2]:
         res = velocity + previous_position
+    elif algorithm == AlgorithmsEnum.MPSO1:
+        inertia = 0.05
+        res = velocity + previous_position * inertia
     return round(res, 2)
 
 
@@ -219,7 +234,7 @@ def get_iteration_value(
     iteration_count, previous_iteration, algorithm, benchmark_function
 ):
     iteration = {}
-    if iteration_count != 1:
+    if iteration_count != 0:
         iteration[
             "particles"
         ] = generate_particles_with_positions_and_velocities_and_algorithm(
@@ -266,7 +281,7 @@ def get_is_stopping_criteria_reached(benchmark_function, g_best):
 def get_algorithm_values(algorithm, benchmark_function, particles):
     is_stopping_criteria_reached = False
     iterations = {}
-    iteration_count = 1
+    iteration_count = 0
     while not is_stopping_criteria_reached:
         previous_iteration = iterations.get(
             iteration_count - 1, {"particles": particles}
@@ -305,22 +320,83 @@ def calculate_algorithms_with_benchmark_functions(benchmark_function):
     mpso_values = get_algorithm_values(
         AlgorithmsEnum.MPSO, benchmark_function, particles
     )
-    pso_values = get_algorithm_values(AlgorithmsEnum.PSO, benchmark_function, particles)
-    t_test = round(
-        (mpso_values["mean"] - pso_values["mean"])
-        / math.sqrt(
-            ((mpso_values["standard_deviation"] ** 2) / mpso_values["iteration_count"])
-            + ((pso_values["standard_deviation"] ** 2) / pso_values["iteration_count"]),
-        ),
-        2,
+    pso_algorithms = [
+        AlgorithmsEnum.MPSO,
+        AlgorithmsEnum.PSO,
+        AlgorithmsEnum.MPSO1,
+        AlgorithmsEnum.MPSO2,
+    ]
+    pso_algorithms_values = {}
+    algorithms_better_than_mpso_ranks = {}
+    algorithms_not_better_than_mpso_ranks = {}
+    algorithms_same_ranks = {}
+    for pso_algorithm in pso_algorithms:
+        pso_algorithms_values[pso_algorithm] = get_algorithm_values(
+            pso_algorithm, benchmark_function, particles
+        )
+        if pso_algorithm != AlgorithmsEnum.MPSO:
+            mpso_mean = pso_algorithms_values[AlgorithmsEnum.MPSO]["mean"]
+            a_mean = pso_algorithms_values[pso_algorithm]["mean"]
+            numerator = mpso_mean - a_mean
+            mpso_standard_deviation = pso_algorithms_values[AlgorithmsEnum.MPSO][
+                "standard_deviation"
+            ]
+            mpso_iteration_count = pso_algorithms_values[AlgorithmsEnum.MPSO][
+                "iteration_count"
+            ]
+            a_standard_deviation = pso_algorithms_values[pso_algorithm][
+                "standard_deviation"
+            ]
+            a_iteration_count = pso_algorithms_values[pso_algorithm]["iteration_count"]
+            denominator = math.sqrt(
+                ((mpso_standard_deviation**2) / mpso_iteration_count)
+                + ((a_standard_deviation**2) / a_iteration_count),
+            )
+
+            t_test = (
+                round(
+                    numerator / denominator,
+                    2,
+                )
+                if denominator != 0
+                else 0
+            )
+            pso_algorithms_values[pso_algorithm]["t_test"] = t_test
+            if t_test == 0:
+                algorithms_same_ranks[pso_algorithm] = pso_algorithm
+            elif t_test < 0:
+                algorithms_better_than_mpso_ranks[t_test] = pso_algorithm
+            else:
+                algorithms_not_better_than_mpso_ranks[t_test] = pso_algorithm
+
+    algorithms_better_than_mpso_ranks_sorted = sorted(
+        algorithms_better_than_mpso_ranks.keys()
     )
-    better_algorithm = "mpso" if t_test >= 0 else "pso"
+    algorithms_not_better_than_mpso_ranks_sorted = sorted(
+        algorithms_not_better_than_mpso_ranks.keys()
+    )
+
+    rank = 1
+
+    for a in algorithms_better_than_mpso_ranks_sorted:
+        pso_algorithms_values[algorithms_better_than_mpso_ranks[a]]["rank"] = rank
+        rank += 1
+
+    mpso_values["rank"] = rank
+    for a in algorithms_same_ranks.keys():
+        pso_algorithms_values[a]["rank"] = rank
+    rank += 1
+
+    for a in algorithms_not_better_than_mpso_ranks_sorted:
+        pso_algorithms_values[algorithms_not_better_than_mpso_ranks[a]]["rank"] = rank
+        rank += 1
+
     return {
         "benchmarkFunction": benchmark_function,
         "mpso_values": mpso_values,
-        "pso_values": pso_values,
-        "t_test": t_test,
-        "better_algorithm": better_algorithm,
+        "pso_values": pso_algorithms_values[AlgorithmsEnum.PSO],
+        "mpso1_values": pso_algorithms_values[AlgorithmsEnum.MPSO1],
+        "mpso2_values": pso_algorithms_values[AlgorithmsEnum.MPSO2],
     }
 
 
