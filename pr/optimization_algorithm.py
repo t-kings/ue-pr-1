@@ -317,9 +317,7 @@ def calculate_algorithms_with_benchmark_functions(benchmark_function):
     particles = generate_initial_particles_with_positions_and_velocities(
         6, 2, benchmark_function
     )
-    mpso_values = get_algorithm_values(
-        AlgorithmsEnum.MPSO, benchmark_function, particles
-    )
+
     pso_algorithms = [
         AlgorithmsEnum.MPSO,
         AlgorithmsEnum.PSO,
@@ -382,7 +380,7 @@ def calculate_algorithms_with_benchmark_functions(benchmark_function):
         pso_algorithms_values[algorithms_better_than_mpso_ranks[a]]["rank"] = rank
         rank += 1
 
-    mpso_values["rank"] = rank
+    pso_algorithms_values[AlgorithmsEnum.MPSO]["rank"] = rank
     for a in algorithms_same_ranks.keys():
         pso_algorithms_values[a]["rank"] = rank
     rank += 1
@@ -393,10 +391,11 @@ def calculate_algorithms_with_benchmark_functions(benchmark_function):
 
     return {
         "benchmarkFunction": benchmark_function,
-        "mpso_values": mpso_values,
+        "mpso_values": pso_algorithms_values[AlgorithmsEnum.MPSO],
         "pso_values": pso_algorithms_values[AlgorithmsEnum.PSO],
         "mpso1_values": pso_algorithms_values[AlgorithmsEnum.MPSO1],
         "mpso2_values": pso_algorithms_values[AlgorithmsEnum.MPSO2],
+        "particles": particles,
     }
 
 
