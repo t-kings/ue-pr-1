@@ -81,3 +81,42 @@ def ackley_function(parameters):
     term2 = -np.exp(np.sum(np.cos(c * x) / len(x)))
     result = term1 + term2 + a + np.exp(1)
     return result
+
+
+def rotated_hyper_ellipsoid(parameters):
+    x = np.array(list(parameters))
+    n = len(x)
+    indices = np.arange(1, n + 1)
+    inner_sum = np.cumsum(x**2)[indices - 1]
+    result = np.sum(inner_sum)
+    return result
+
+
+def levi_function(x, y):
+    term1 = np.sin(3 * np.pi * x) ** 2
+    term2 = (x - 1) ** 2 * (1 + np.sin(3 * np.pi * y) ** 2)
+    term3 = (y - 1) ** 2 * (1 + np.sin(2 * np.pi * y) ** 2)
+    result = term1 + term2 + term3
+    return result
+
+
+def foxholes_function(x, y):
+    denominator = 50 * np.sqrt((x**2) / 2 + (y**2) / 3)
+    result = 1 / 500 - 1 / denominator
+    return result
+
+
+def rosenbrock_function(parameters):
+    x = np.array(list(parameters))
+    return np.sum(100.0 * (x[1:] - x[:-1] ** 2) ** 2 + (1 - x[:-1]) ** 2)
+
+
+def goldstein_price_function(parameters):
+    x = np.array(list(parameters))
+    term1 = 1 + (x[0] + x[1] + 1) ** 2 * (
+        19 - 14 * x[0] + 3 * x[0] ** 2 - 14 * x[1] + 6 * x[0] * x[1] + 3 * x[1] ** 2
+    )
+    term2 = 30 + (2 * x[0] - 3 * x[1]) ** 2 * (
+        18 - 32 * x[0] + 12 * x[0] ** 2 + 48 * x[1] - 36 * x[0] * x[1] + 27 * x[1] ** 2
+    )
+    return term1 * term2

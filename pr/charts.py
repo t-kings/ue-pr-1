@@ -8,7 +8,7 @@ data = comparison
 
 def plot_particles():
     count = 0
-    fig, axs = plt.subplots(nrows=2, ncols=5, figsize=(24, 7))
+    fig, axs = plt.subplots(nrows=3, ncols=5, figsize=(24, 10.5))
 
     for entry in data.values():
         col = count % 5
@@ -96,7 +96,7 @@ def plot_comparison():
             ]
         )
 
-    fig, ax = plt.subplots(figsize=(10, 8))
+    fig, ax = plt.subplots(figsize=(10, 12))
     ax.axis("off")
     table_data = [table.field_names] + table._rows
     table_ax = ax.table(
