@@ -112,10 +112,8 @@ def plot_comparison():
 
     plt.savefig("table_visualization.png", bbox_inches="tight", pad_inches=0.5)
 
-    # Convert the PrettyTable to a Pandas DataFrame
     df = pd.DataFrame(table._rows[1:], columns=table.field_names)
 
-    # Export the DataFrame to an Excel file
     df.to_csv(
         "table_data.csv",
         index=False,
@@ -123,3 +121,4 @@ def plot_comparison():
 
 
 plot_particles()
+plot_comparison()
