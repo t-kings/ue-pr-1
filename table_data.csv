@@ -1,154 +1,239 @@
 S/N,Benchmark Function,PSO,MPSO,MPSO-1,MPSO-2
-2,Calculate Step 2 Function Value,"Mean: 5.98
-Std Dev: 5.54
-T test: -1.03
+2,Calculate Step 2 Function Value,"Mean: 0.71
+Std Dev: 0.87
+T test: -0.58
 Iteration Size: 8
-Rank: 1","Mean: 3.62
-Std Dev: 4.87
+Rank: 2","Mean: 0.44
+Std Dev: 0.77
 T test: 
-Iteration Size: 17
-Rank: 2","Mean: 0.78
-Std Dev: 0.61
-T test: 2.4
-Iteration Size: 500
-Rank: 4","Mean: 2.29
-Std Dev: 3.9
-T test: 0.96
+Iteration Size: 5
+Rank: 4","Mean: 0.59
+Std Dev: 0.41
+T test: -0.43
+Iteration Size: 31
+Rank: 3","Mean: 0.82
+Std Dev: 0.71
+T test: -1.02
+Iteration Size: 25
+Rank: 1"
+3,Quartic Function,"Mean: 0.02
+Std Dev: 0.4
+T test: 1.31
+Iteration Size: 5000
+Rank: 4","Mean: 1.13
+Std Dev: 4.73
+T test: 
+Iteration Size: 31
+Rank: 1","Mean: 0.18
+Std Dev: 1.46
+T test: 1.11
+Iteration Size: 332
+Rank: 2","Mean: 0.03
+Std Dev: 0.41
+T test: 1.29
+Iteration Size: 5000
+Rank: 3"
+4,Schwefel 2.21 Function,"Mean: 0.06
+Std Dev: 0.79
+T test: -1.28
+Iteration Size: 5000
+Rank: 2","Mean: 0.04
+Std Dev: 0.77
+T test: 
+Iteration Size: 5000
+Rank: 4","Mean: 4.86
+Std Dev: 7.94
+T test: -1.21
+Iteration Size: 4
+Rank: 3","Mean: 2.97
+Std Dev: 5.92
+T test: -3.01
+Iteration Size: 37
+Rank: 1"
+5,Schwefel 2.22 Function,"Mean: 0.71
+Std Dev: 1.3
+T test: -3.31
+Iteration Size: 40
+Rank: 1","Mean: 0.03
+Std Dev: 0.14
+T test: 
+Iteration Size: 5000
+Rank: 4","Mean: 2.08
+Std Dev: 3.31
+T test: -1.07
+Iteration Size: 3
+Rank: 3","Mean: 0.78
+Std Dev: 1.37
+T test: -3.14
+Iteration Size: 33
+Rank: 2"
+6,Six-Hump Camel Back,"Mean: -1.03
+Std Dev: 0.0
+T test: 0
+Iteration Size: 5000
+Rank: 1","Mean: -1.03
+Std Dev: 0.0
+T test: 
+Iteration Size: 5000
+Rank: 1","Mean: -1.03
+Std Dev: 0.0
+T test: 0
+Iteration Size: 5000
+Rank: 1","Mean: -1.03
+Std Dev: 0.0
+T test: 0
+Iteration Size: 5000
+Rank: 1"
+7,Rastrigin Function,"Mean: 1.06
+Std Dev: 1.52
+T test: 0.3
+Iteration Size: 5000
+Rank: 4","Mean: 1.07
+Std Dev: 1.79
+T test: 
+Iteration Size: 5000
+Rank: 3","Mean: 15.8
+Std Dev: 27.38
+T test: -1.08
+Iteration Size: 4
+Rank: 2","Mean: 9.71
+Std Dev: 15.5
+T test: -3.48
+Iteration Size: 39
+Rank: 1"
+8,Griewank Function,"Mean: 0.35
+Std Dev: 3.2
+T test: 7.72
+Iteration Size: 5000
+Rank: 3","Mean: 0.84
+Std Dev: 3.15
+T test: 
+Iteration Size: 5000
+Rank: 2","Mean: 12.36
+Std Dev: 20.72
+T test: -0.96
+Iteration Size: 3
+Rank: 1","Mean: 0.29
+Std Dev: 2.82
+T test: 9.2
+Iteration Size: 5000
+Rank: 4"
+9,Branin Function,"Mean: 0.4
+Std Dev: 0.12
+T test: 6.8
+Iteration Size: 5000
+Rank: 4","Mean: 0.42
+Std Dev: 0.17
+T test: 
+Iteration Size: 5000
+Rank: 2","Mean: 0.44
+Std Dev: 0.32
+T test: -3.9
+Iteration Size: 5000
+Rank: 1","Mean: 0.4
+Std Dev: 0.15
+T test: 6.24
+Iteration Size: 5000
+Rank: 3"
+10,Ackley Function,"Mean: 17.77
+Std Dev: 0.01
+T test: -16.3
+Iteration Size: 5000
+Rank: 1","Mean: 3.97
+Std Dev: 5.01
+T test: 
+Iteration Size: 35
+Rank: 3","Mean: 5.27
+Std Dev: 6.93
+T test: -0.36
+Iteration Size: 4
+Rank: 2","Mean: 3.02
+Std Dev: 4.78
+T test: 0.87
+Iteration Size: 48
+Rank: 4"
+11,Rotated Hyper Ellipsoid Function,"Mean: 0.89
+Std Dev: 32.14
+T test: 1.83
+Iteration Size: 5000
+Rank: 4","Mean: 159.68
+Std Dev: 425.41
+T test: 
+Iteration Size: 24
+Rank: 2","Mean: 465.26
+Std Dev: 800.46
+T test: -0.65
+Iteration Size: 3
+Rank: 1","Mean: 130.69
+Std Dev: 389.08
+T test: 0.25
 Iteration Size: 28
 Rank: 3"
-3,Quartic Function,"Mean: 0.07
-Std Dev: 0.04
-T test: 10.61
-Iteration Size: 500
-Rank: 4","Mean: 0.13
-Std Dev: 0.12
+12,Levi Function,"Mean: 0.08
+Std Dev: 2.26
+T test: 2.57
+Iteration Size: 5000
+Rank: 4","Mean: 7.75
+Std Dev: 20.64
 T test: 
-Iteration Size: 500
-Rank: 2","Mean: 0.31
-Std Dev: 0.03
-T test: -32.54
-Iteration Size: 500
-Rank: 1","Mean: 0.07
-Std Dev: 0.11
-T test: 8.24
-Iteration Size: 500
-Rank: 3"
-4,Schwefel 2.21 Function,"Mean: 0.14
-Std Dev: 0.89
-T test: 2.39
-Iteration Size: 500
-Rank: 4","Mean: 1.24
-Std Dev: 2.59
-T test: 
-Iteration Size: 32
-Rank: 3","Mean: 3.54
-Std Dev: 5.36
-T test: -0.85
-Iteration Size: 4
-Rank: 2","Mean: 1.82
-Std Dev: 3.08
-T test: -0.93
-Iteration Size: 53
-Rank: 1"
-5,Schwefel 2.22 Function,"Mean: 0.38
-Std Dev: 0.65
-T test: 1.02
-Iteration Size: 17
-Rank: 4","Mean: 0.62
-Std Dev: 0.94
-T test: 
-Iteration Size: 29
-Rank: 3","Mean: 0.79
-Std Dev: 1.22
-T test: -0.23
-Iteration Size: 3
-Rank: 2","Mean: 1.36
-Std Dev: 1.34
-T test: -2.73
-Iteration Size: 42
-Rank: 1"
-6,Six-Hump Camel Back,"Mean: 7.09
-Std Dev: 7.83
-T test: -0.03
-Iteration Size: 2
-Rank: 2","Mean: 6.87
-Std Dev: 7.99
-T test: 
-Iteration Size: 2
-Rank: 3","Mean: 9.22
-Std Dev: 8.84
-T test: -0.22
-Iteration Size: 1
-Rank: 1","Mean: 5.67
-Std Dev: 7.18
-T test: 0.2
-Iteration Size: 15
-Rank: 4"
-7,Rastrigin Function,"Mean: 103.37
-Std Dev: 1673.0
-T test: 0.32
-Iteration Size: 500
-Rank: 4","Mean: 138.65
-Std Dev: 1834.54
-T test: 
-Iteration Size: 500
-Rank: 3","Mean: 8344.62
-Std Dev: 14453.03
-T test: -0.98
-Iteration Size: 3
-Rank: 2","Mean: 519.43
-Std Dev: 3782.18
-T test: -2.03
-Iteration Size: 500
-Rank: 1"
-8,Griewank Function,"Mean: 0.09
-Std Dev: 0.67
-T test: 0.0
-Iteration Size: 500
-Rank: 2","Mean: 0.09
-Std Dev: 0.61
-T test: 
-Iteration Size: 500
-Rank: 2","Mean: 3.06
-Std Dev: 4.84
-T test: -1.06
-Iteration Size: 3
-Rank: 1","Mean: 0.05
-Std Dev: 0.51
-T test: 1.12
-Iteration Size: 500
-Rank: 3"
-9,Branin Function,"Mean: 7.25
-Std Dev: 1.34
-T test: -73.38
-Iteration Size: 500
+Iteration Size: 48
 Rank: 1","Mean: 0.6
-Std Dev: 1.52
+Std Dev: 3.25
+T test: 2.4
+Iteration Size: 682
+Rank: 2","Mean: 0.16
+Std Dev: 2.08
+T test: 2.55
+Iteration Size: 5000
+Rank: 3"
+13,Foxholes Function,"Mean: 0.0
+Std Dev: 0.0
+T test: 0
+Iteration Size: 0
+Rank: 1","Mean: 0.0
+Std Dev: 0.0
 T test: 
-Iteration Size: 500
-Rank: 3","Mean: 5.42
-Std Dev: 1.07
-T test: -57.98
-Iteration Size: 500
-Rank: 2","Mean: 0.58
-Std Dev: 1.79
-T test: 0.19
-Iteration Size: 500
-Rank: 4"
-10,Ackley Function,"Mean: 0.26
-Std Dev: 1.43
-T test: -0.81
-Iteration Size: 292
-Rank: 3","Mean: 0.18
-Std Dev: 1.15
-T test: 
-Iteration Size: 500
-Rank: 4","Mean: 4.74
-Std Dev: 5.73
-T test: -1.38
-Iteration Size: 3
-Rank: 2","Mean: 5.55
-Std Dev: 5.45
-T test: -6.6
-Iteration Size: 45
+Iteration Size: 0
+Rank: 1","Mean: 0.0
+Std Dev: 0.0
+T test: 0
+Iteration Size: 0
+Rank: 1","Mean: 0.0
+Std Dev: 0.0
+T test: 0
+Iteration Size: 0
 Rank: 1"
+14,Rosenbrock Function,"Mean: 3.11
+Std Dev: 0.16
+T test: -742.83
+Iteration Size: 5000
+Rank: 1","Mean: 0.58
+Std Dev: 0.18
+T test: 
+Iteration Size: 5000
+Rank: 2","Mean: 0.05
+Std Dev: 0.16
+T test: 155.61
+Iteration Size: 5000
+Rank: 4","Mean: 0.03
+Std Dev: 0.23
+T test: 133.16
+Iteration Size: 5000
+Rank: 3"
+15,Goldstein Price Function,"Mean: 3.02
+Std Dev: 0.98
+T test: 2.22
+Iteration Size: 5000
+Rank: 4","Mean: 3.08
+Std Dev: 1.64
+T test: 
+Iteration Size: 5000
+Rank: 2","Mean: 3.33
+Std Dev: 3.08
+T test: -5.07
+Iteration Size: 5000
+Rank: 1","Mean: 3.04
+Std Dev: 1.15
+T test: 1.41
+Iteration Size: 5000
+Rank: 3"

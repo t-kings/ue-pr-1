@@ -1,5 +1,10 @@
 from enum import Enum
 from benchmark_functions import (
+    foxholes_function,
+    goldstein_price_function,
+    levi_function,
+    rosenbrock_function,
+    rotated_hyper_ellipsoid,
     sphere_function,
     calculate_step_2_function_value,
     quartic_function,
@@ -14,6 +19,7 @@ from benchmark_functions import (
 import statistics
 import math
 from helpers import generate_random_in_range
+import numpy as np
 
 
 class AlgorithmsEnum(Enum):
@@ -34,6 +40,11 @@ class BenchmarkFunctionEnum(Enum):
     GRIEWANK_FUNCTION = "Griewank Function"
     BRANIN_FUNCTION = "Branin Function"
     ACKLEY_FUNCTION = "Ackley Function"
+    ROTATED_HYPER_ELLIPSOID_FUNCTION = "Rotated Hyper Ellipsoid Function"
+    LEVI_FUNCTION = "Levi Function"
+    FOXHOLES_FUNCTION = "Foxholes Function"
+    ROSENBROCK_FUNCTION = "Rosenbrock Function"
+    GOLDSTEIN_PRICE_FUNCTION = "Goldstein Price Function"
 
 
 def calculate_particle_p_best(iteration_particles, previous_iteration_particles):
@@ -101,6 +112,22 @@ def calculate_particle_value_with_algorithm(particles, benchmark_function):
             )
         elif benchmark_function == BenchmarkFunctionEnum.ACKLEY_FUNCTION:
             res = ackley_function(particle_data["position"].values())
+        elif (
+            benchmark_function == BenchmarkFunctionEnum.ROTATED_HYPER_ELLIPSOID_FUNCTION
+        ):
+            res = rotated_hyper_ellipsoid(particle_data["position"].values())
+        elif benchmark_function == BenchmarkFunctionEnum.LEVI_FUNCTION:
+            res = levi_function(
+                particle_data["position"][1], particle_data["position"][2]
+            )
+        elif benchmark_function == BenchmarkFunctionEnum.FOXHOLES_FUNCTION:
+            res = foxholes_function(
+                particle_data["position"][1], particle_data["position"][2]
+            )
+        elif benchmark_function == BenchmarkFunctionEnum.ROSENBROCK_FUNCTION:
+            res = rosenbrock_function(particle_data["position"].values())
+        elif benchmark_function == BenchmarkFunctionEnum.GOLDSTEIN_PRICE_FUNCTION:
+            res = goldstein_price_function(particle_data["position"].values())
 
         particle_data["function_value"] = round(res, 2)
     return particles
@@ -118,6 +145,11 @@ def get_range_per_benchmark_function(benchmark_function):
         BenchmarkFunctionEnum.GRIEWANK_FUNCTION: [-600, 600],
         BenchmarkFunctionEnum.BRANIN_FUNCTION: [-5, 5],
         BenchmarkFunctionEnum.ACKLEY_FUNCTION: [-32, 32],
+        BenchmarkFunctionEnum.ROTATED_HYPER_ELLIPSOID_FUNCTION: [-100, 100],
+        BenchmarkFunctionEnum.LEVI_FUNCTION: [-50, 50],
+        BenchmarkFunctionEnum.FOXHOLES_FUNCTION: [-65.536, 65.536],
+        BenchmarkFunctionEnum.ROSENBROCK_FUNCTION: [-2.048, 2.048],
+        BenchmarkFunctionEnum.GOLDSTEIN_PRICE_FUNCTION: [-2, 2],
     }
     return ranges[benchmark_function]
 
@@ -157,36 +189,33 @@ def generate_velocity(
         c1 = c1 - change_rate
         c2 = c2 + change_rate
         inertia = inertia / iteration_count
-        res = round(
-            inertia * previous_velocity
-            + c1 * r1 * (personal_best - position)
-            + c2 * r2 * (global_best - position),
-            2,
-        )
-    elif algorithm == AlgorithmsEnum.PSO:
-        res = round(
-            inertia * previous_velocity
-            + c1 * r1 * (personal_best - position)
-            + c2 * r2 * (global_best - position),
-            2,
-        )
-    elif algorithm == AlgorithmsEnum.MPSO2:
-        inertia = (2 / iteration_count) ** 0.3
-        res = round(
-            inertia * previous_velocity
-            + c1 * r1 * (personal_best - position)
-            + c2 * r2 * (global_best - position),
-            2,
-        )
-    elif algorithm == AlgorithmsEnum.MPSO1:
-        res = round(
+        res = (
             inertia * previous_velocity
             + c1 * r1 * (personal_best - position)
             + c2 * r2 * (global_best - position)
-            + inertia * (c1 / c2) * (personal_best - global_best),
-            2,
         )
-    return res
+    elif algorithm == AlgorithmsEnum.PSO:
+        res = (
+            inertia * previous_velocity
+            + c1 * r1 * (personal_best - position)
+            + c2 * r2 * (global_best - position)
+        )
+    elif algorithm == AlgorithmsEnum.MPSO2:
+        inertia = (2 / iteration_count) ** 0.3
+        res = (
+            inertia * previous_velocity
+            + c1 * r1 * (personal_best - position)
+            + c2 * r2 * (global_best - position)
+        )
+    elif algorithm == AlgorithmsEnum.MPSO1:
+        res = (
+            inertia * previous_velocity
+            + c1 * r1 * (personal_best - position)
+            + c2 * r2 * (global_best - position)
+            + inertia * (c1 / c2) * (personal_best - global_best)
+        )
+    res = np.clip(res, -10, 10)
+    return np.round(res, 2)
 
 
 def generate_position(algorithm, velocity, previous_position):
@@ -196,7 +225,7 @@ def generate_position(algorithm, velocity, previous_position):
     elif algorithm == AlgorithmsEnum.MPSO1:
         inertia = 0.05
         res = velocity + previous_position * inertia
-    return round(res, 2)
+    return np.round(res, 2)
 
 
 def generate_particles_with_positions_and_velocities_and_algorithm(
@@ -268,12 +297,16 @@ def get_is_stopping_criteria_reached(benchmark_function, g_best):
         BenchmarkFunctionEnum.QUARTIC_FUNCTION: g_best == 0,
         BenchmarkFunctionEnum.SCHWEFEL_2_21_FUNCTION: g_best == 0,
         BenchmarkFunctionEnum.SCHWEFEL_2_22_FUNCTION: g_best == 0,
-        BenchmarkFunctionEnum.SIX_HUMP_CAMEL_BACK: (0.0898 >= g_best >= -0.7126)
-        or (-0.0898 <= g_best <= 0.7126),
+        BenchmarkFunctionEnum.SIX_HUMP_CAMEL_BACK: g_best == 0,
         BenchmarkFunctionEnum.RASTRIGIN: g_best == 0,
         BenchmarkFunctionEnum.GRIEWANK_FUNCTION: g_best == 0,
-        BenchmarkFunctionEnum.BRANIN_FUNCTION: g_best == 0.398,
+        BenchmarkFunctionEnum.BRANIN_FUNCTION: g_best == 0,
         BenchmarkFunctionEnum.ACKLEY_FUNCTION: g_best == 0,
+        BenchmarkFunctionEnum.ROTATED_HYPER_ELLIPSOID_FUNCTION: g_best == 0,
+        BenchmarkFunctionEnum.LEVI_FUNCTION: g_best == 0,
+        BenchmarkFunctionEnum.FOXHOLES_FUNCTION: g_best == 0,
+        BenchmarkFunctionEnum.ROSENBROCK_FUNCTION: g_best == 0,
+        BenchmarkFunctionEnum.GOLDSTEIN_PRICE_FUNCTION: g_best == 0,
     }
     return stopping_criteria.get(benchmark_function, False)
 
@@ -295,7 +328,7 @@ def get_algorithm_values(algorithm, benchmark_function, particles):
             get_is_stopping_criteria_reached(
                 benchmark_function, iteration["g_best"]["value"]
             )
-            or iteration_count == 500
+            or iteration_count == 5000
         ):
             is_stopping_criteria_reached = True
         iteration_count += 1
@@ -346,9 +379,13 @@ def calculate_algorithms_with_benchmark_functions(benchmark_function):
                 "standard_deviation"
             ]
             a_iteration_count = pso_algorithms_values[pso_algorithm]["iteration_count"]
-            denominator = math.sqrt(
-                ((mpso_standard_deviation**2) / mpso_iteration_count)
-                + ((a_standard_deviation**2) / a_iteration_count),
+            denominator = (
+                math.sqrt(
+                    ((mpso_standard_deviation**2) / mpso_iteration_count)
+                    + ((a_standard_deviation**2) / a_iteration_count),
+                )
+                if mpso_iteration_count != 0 and a_iteration_count != 0
+                else 0
             )
 
             t_test = (
@@ -360,6 +397,7 @@ def calculate_algorithms_with_benchmark_functions(benchmark_function):
                 else 0
             )
             pso_algorithms_values[pso_algorithm]["t_test"] = t_test
+            pso_algorithms_values[pso_algorithm]["rank"] = ""
             if t_test == 0:
                 algorithms_same_ranks[pso_algorithm] = pso_algorithm
             elif t_test < 0:
@@ -411,6 +449,11 @@ def custom_particle_swarm_optimization_comparison():
         BenchmarkFunctionEnum.GRIEWANK_FUNCTION,
         BenchmarkFunctionEnum.BRANIN_FUNCTION,
         BenchmarkFunctionEnum.ACKLEY_FUNCTION,
+        BenchmarkFunctionEnum.ROTATED_HYPER_ELLIPSOID_FUNCTION,
+        BenchmarkFunctionEnum.LEVI_FUNCTION,
+        BenchmarkFunctionEnum.FOXHOLES_FUNCTION,
+        BenchmarkFunctionEnum.ROSENBROCK_FUNCTION,
+        BenchmarkFunctionEnum.GOLDSTEIN_PRICE_FUNCTION,
     ]
     benchmark_functions_iterations = {}
     for benchmark_function in benchmark_functions:
